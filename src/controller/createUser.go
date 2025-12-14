@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/// Função que cria um user
 func CreateUser(c *gin.Context) {
 
 	var UserRequest request.UserRequest

@@ -15,6 +15,8 @@ import (
 
 var transl ut.Translator
 
+/// Inicializa o translator, sua chamada é automática pelo runtime sempre que o package (validation) é importado, ou seja, não precisa ser invocada manualmente
+/// Importante: o valor passado como parâmetro (*validator.Validate) vem direto do gin-gonic, isso porque ele usa o pacote validator/v10 e já o inicializa internamente 
 func init() {
 	if val, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		en := en.New()
@@ -24,6 +26,8 @@ func init() {
 	}
 } 
 
+/// Função que retorna o erro de validação de um user
+/// internamente ele compara o erro inserido com os erros de validação do pacote validator/v10 e retorna um ubjeto de `RestErr`
 func ValidateUserError(validation_err error) *resterr.RestErr {
 	var jsonErr *json.UnmarshalTypeError
 	var jsonValidationError validator.ValidationErrors

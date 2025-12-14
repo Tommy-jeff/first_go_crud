@@ -1,6 +1,7 @@
 package request
 
-
+/// Um modelo de request que deve ser recebido.
+/// Os modelos json são declarodos juntos com "binding" o qual é usado para definir validações no request 
 type UserRequest struct {
 	Name 	 string `json:"name" binding:"required,min=4,max=100"`
 	Email 	 string `json:"email" binding:"required,email"`
