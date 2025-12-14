@@ -18,6 +18,4 @@ func CreateUser(c *gin.Context) {
 		c.JSON(restErr.Code, restErr)
 	}
 
-	fmt.Println(UserRequest)
-
 }
