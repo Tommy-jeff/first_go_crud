@@ -1,2 +1,59 @@
 package logger
 
+import (
+	"os"
+	"strings"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
+
+
+var (
+	log *zap.Logger
+
+	LOG_OUTPUT = "LOG_OUTPUT"
+	LOG_LEVEL = "LOG_LEVEL"
+)
+func init() {
+
+	logConfig := zap.Config{
+		OutputPaths: []string{getOutoputLogs()},
+		Level:       zap.NewAtomicLevelAt(getLevelLogs()),
+		Encoding:    "json",
+		EncoderConfig: zapcore.EncoderConfig{
+			LevelKey:     "level",
+			TimeKey:      "time",
+			MessageKey:   "message",
+			EncodeLevel:  zapcore.LowercaseLevelEncoder,
+			EncodeTime:   zapcore.ISO8601TimeEncoder,
+			EncodeCaller: zapcore.ShortCallerEncoder,
+		},
+	}
+
+	log, _ = logConfig.Build()
+
+}
+
+func getOutoputLogs() string {
+	output := strings.ToLower(strings.TrimSpace(os.Getenv(LOG_OUTPUT)))
+	if output == "" {
+		return "stdout"
+	}
+	return output
+}
+
+func getLevelLogs() zapcore.Level {
+	switch strings.ToLower(strings.TrimSpace(os.Getenv(LOG_LEVEL))) {
+		case "debug":
+			return zap.DebugLevel
+		case "info":
+			return zap.InfoLevel
+		case "warning":
+			return zap.WarnLevel
+		case "error":
+			return zap.ErrorLevel
+		default:
+			return zap.InfoLevel
+	}
+}
