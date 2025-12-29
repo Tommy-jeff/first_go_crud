@@ -1,8 +1,6 @@
 package model
 
 import (
-	"fmt"
-
 	"github.com/Tommy-jeff/first_go_crud/src/configs/logger"
 	resterr "github.com/Tommy-jeff/first_go_crud/src/configs/rest_err"
 	"go.uber.org/zap"
