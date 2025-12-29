@@ -7,34 +7,48 @@ import (
 	"github.com/Tommy-jeff/first_go_crud/src/configs/validation"
 	"github.com/Tommy-jeff/first_go_crud/src/controller/model/request"
 	"github.com/Tommy-jeff/first_go_crud/src/controller/model/response"
+	"github.com/Tommy-jeff/first_go_crud/src/model"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap/zapcore"
+	"go.uber.org/zap"
 )
 
-// / Função que cria um user
+var (
+	UserDomainInterface model.UserDomainInterface
+)
+
+// Função que cria um user
 func CreateUser(c *gin.Context) {
 	logger.Info("Init CreateUser Controller",
-		zapcore.Field{
-			Key:    "journey",
-			String: "createUser",
-		},
+		zap.String("Journey", "createUser"),
 	)
 
 	var UserRequest request.UserRequest
 
 	if err := c.ShouldBindJSON(&UserRequest); err != nil {
 		logger.Error("Error trying to validade user info", err,
-			zapcore.Field{
-				Key:    "journey",
-				String: "createUser",
-			},
+			zap.String("Journey", "createUser"),
 		)
 		restErr := validation.ValidateUserError(err)
 		c.JSON(restErr.Code, restErr)
 		return
 	}
 
-	response := response.UserResponse{
+	domain := model.NewUserDomain(
+		UserRequest.Email,
+		UserRequest.Password,
+		UserRequest.Name,
+		UserRequest.Age,
+	)
+	
+	if err := domain.CreateUser(); err != nil {
+		logger.Error("Error trying to create user", err,
+			zap.String("Journey", "createUser"),
+		)
+		c.JSON(err.Code, err)
+		return
+	}
+
+	response := response.UserResponse {
 		ID:    1,
 		Name:  UserRequest.Name,
 		Email: UserRequest.Email,
@@ -42,10 +56,7 @@ func CreateUser(c *gin.Context) {
 	}
 
 	logger.Info("user created succesfully",
-		zapcore.Field{
-			Key:    "journey",
-			String: "createUser",
-		},
+		zap.String("Journey", "createUser"),
 	)
 
 	c.JSON(http.StatusOK, response)

@@ -43,7 +43,6 @@ func NewBadRequestError(message string) *RestErr {
 	}
 }
 
-
 /// Metodo que cria o objeto `RestErr` do tipo `BadRequestValidationError`
 func NewBadRequestValidationError(message string, causes []Causes) *RestErr {
 	return &RestErr{
